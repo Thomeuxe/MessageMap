@@ -1,7 +1,5 @@
 package com.thomaslecoeur.messagemap;
 
-import android.location.Location;
-import android.location.LocationListener;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +12,8 @@ import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
 
+import java.util.ArrayList;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -21,6 +21,8 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     private static final String TAG = "MAP_FRAGMENT";
     MapView mapView;
+
+    ArrayList<LatLng> markerList = new ArrayList<LatLng>();
 
     public MapActivityFragment() {
     }
@@ -40,10 +42,16 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
         mapView.setOnMapLongClickListener(this);
 
-        mapView.addMarker(new MarkerOptions()
-                .position(new LatLng(40.73581, -73.99155))
-                .title("Hello World!")
-                .snippet("Welcome to my marker."));
+        if(savedInstanceState!=null){
+            if(savedInstanceState.containsKey("points")){
+                markerList = savedInstanceState.getParcelableArrayList("points");
+                if(markerList!=null){
+                    for(int i=0;i<markerList.size();i++){
+                        createMarker(markerList.get(i));
+                    }
+                }
+            }
+        }
 
         mapView.onCreate(savedInstanceState);
 
@@ -52,8 +60,27 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("points", markerList);
         mapView.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    /*********
+     * Custom map method
+     */
+
+    public void createMarker(LatLng point) {
+
+        MarkerOptions markerOptions = new MarkerOptions();
+
+        // Setting latitude and longitude of the marker
+        markerOptions.position(point);
+
+        // Setting the title of the marker
+        markerOptions.title("Lat:"+point.getLatitude()+","+"Lng:"+point.getLongitude());
+
+        // Adding marker on map
+        mapView.addMarker(markerOptions);
     }
 
     /*********
@@ -92,10 +119,11 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     @Override
     public void onMapLongClick(LatLng point) {
-        Log.d(TAG, "Long click");
         mapView.addMarker(new MarkerOptions()
                 .position(point)
                 .title("Hello World!")
                 .snippet("Welcome to my marker."));
+
+        markerList.add(point);
     }
 }
