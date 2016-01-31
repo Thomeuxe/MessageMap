@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">MessageMap</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="open_map_label">Open Map</string>
 </resources>
