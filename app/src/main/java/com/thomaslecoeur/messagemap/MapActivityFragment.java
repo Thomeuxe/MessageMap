@@ -1,7 +1,10 @@
 package com.thomaslecoeur.messagemap;
 
+import android.location.Location;
+import android.location.LocationListener;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +17,7 @@ import com.mapbox.mapboxsdk.views.MapView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MapActivityFragment extends Fragment {
+public class MapActivityFragment extends Fragment implements MapView.OnMapLongClickListener {
 
     private static final String TAG = "MAP_FRAGMENT";
     MapView mapView;
@@ -35,6 +38,8 @@ public class MapActivityFragment extends Fragment {
         mapView.setLatLng(new LatLng(40.73581, -73.99155));
         mapView.setZoom(11);
 
+        mapView.setOnMapLongClickListener(this);
+
         mapView.addMarker(new MarkerOptions()
                 .position(new LatLng(40.73581, -73.99155))
                 .title("Hello World!")
@@ -44,6 +49,16 @@ public class MapActivityFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    /*********
+     * mapBox listener implementation
+     */
 
     @Override
     public void onStart() {
@@ -76,8 +91,11 @@ public class MapActivityFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mapView.onSaveInstanceState(outState);
+    public void onMapLongClick(LatLng point) {
+        Log.d(TAG, "Long click");
+        mapView.addMarker(new MarkerOptions()
+                .position(point)
+                .title("Hello World!")
+                .snippet("Welcome to my marker."));
     }
 }
