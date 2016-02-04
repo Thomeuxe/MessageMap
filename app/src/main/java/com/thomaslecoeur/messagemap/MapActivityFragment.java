@@ -4,16 +4,15 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -38,9 +37,9 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
     MapView mapView;
 
     GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
     private Location mCurrentLocation;
     private Marker mCurrentLocationMarker;
+    private FloatingActionButton mCenterCurrentPositionButton;
 
     ArrayList<LatLng> markerList = new ArrayList<LatLng>();
 
@@ -61,8 +60,24 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        /*
+         Center on current location button listener
+          */
+
+        mCenterCurrentPositionButton = (FloatingActionButton) view.findViewById(R.id.centerCurrentPositionButton);
+
+        mCenterCurrentPositionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                centerOnCurrentLocation();
+            }
+        });
+
+        /*
+         MapBox initialisation
+          */
 
         mapView = (MapView) view.findViewById(R.id.mapView);
         mapView.setAccessToken(BuildConfig.MAPBOX_ACCESS_TOKEN);
@@ -71,6 +86,10 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
         mapView.setZoom(11);
 
         mapView.setOnMapLongClickListener(this);
+
+        /*
+         Restore marker from saved markers
+          */
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("points")) {
@@ -166,16 +185,17 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected");
 
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         LocationRequest locationRequest;
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(100);
+        locationRequest.setSmallestDisplacement(3);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
 
-        LatLng currentLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
         mapView.setLatLng(currentLatLng);
 
@@ -183,7 +203,7 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
                 .position(currentLatLng)
                 .title("My Position"));
 
-        Log.d(TAG, "onConnected: " + mLastLocation.toString());
+        Log.d(TAG, "onConnected: " + mCurrentLocation.toString());
     }
 
     @Override
@@ -204,10 +224,15 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
                 .title("Hello World!")
                 .snippet("Welcome to my marker."));
 
-        float sTmpBearing = (float) mapView.getBearing();
-        mapView.setLatLng(currentLatLng);
-        mapView.setBearing(sTmpBearing);
-
         Log.d(TAG, "onLocationChanged: " + mCurrentLocation.toString());
+    }
+
+    /**
+     * UI listeners
+     */
+
+    public void centerOnCurrentLocation() {
+        Log.d(TAG, "CenterOnCurrentLocation");
+        mapView.setLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), true);
     }
 }

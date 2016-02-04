@@ -3,12 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.thomaslecoeur.messagemap.MapActivityFragment"
+    android:fitsSystemWindows="true"
     tools:showIn="@layout/activity_map">
 
     <com.mapbox.mapboxsdk.views.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/centerCurrentPositionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

@@ -2,11 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.thomaslecoeur.messagemap.LaunchMapFragment">
+    tools:context="com.thomaslecoeur.messagemap.LaunchNoteListFragment">
 
     <Button
-        android:id="@+id/openMapButton"
-        android:text="@string/open_map_label"
+        android:id="@+id/openNoteListButton"
+        android:text="@string/open_note_list_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

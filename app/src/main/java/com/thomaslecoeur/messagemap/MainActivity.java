@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-public class MainActivity extends AppCompatActivity implements LaunchMapFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements LaunchMapFragment.OnFragmentInteractionListener, LaunchNoteListFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
 
@@ -18,7 +18,8 @@ public class MainActivity extends AppCompatActivity implements LaunchMapFragment
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.openMapButtonWrapper, new LaunchMapFragment())
+                .replace(R.id.openMapButtonWrapper, new LaunchMapFragment())
+                .replace(R.id.openNoteListWrapper, new LaunchNoteListFragment())
                 .commit();
     }
 
@@ -26,5 +27,11 @@ public class MainActivity extends AppCompatActivity implements LaunchMapFragment
     public void onFragmentInteraction() {
         Log.d(TAG, "click");
         startActivity(new Intent(MainActivity.this, MapActivity.class));
+    }
+
+    @Override
+    public void onLaunchNoteListButtonFragmentInteraction() {
+        Log.d(TAG, "onLaunchNoteListButtonFragmentInteraction: click");
+        startActivity(new Intent(MainActivity.this, ListNoteActivity.class));
     }
 }

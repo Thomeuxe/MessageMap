@@ -5,4 +5,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="open_map_label">Open Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="open_note_list_label">Toutes les notes</string>
 </resources>
