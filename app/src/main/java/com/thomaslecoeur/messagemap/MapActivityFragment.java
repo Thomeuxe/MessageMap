@@ -15,6 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -25,7 +29,7 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MapActivityFragment extends Fragment implements MapView.OnMapLongClickListener, LocationListener {
+public class MapActivityFragment extends Fragment implements MapView.OnMapLongClickListener, GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener {
 
     private static final String TAG = "MAP_FRAGMENT";
 
@@ -33,11 +37,24 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     MapView mapView;
 
-    private LocationManager locationManager;
+    GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private Location mCurrentLocation;
+    private Marker mCurrentLocationMarker;
 
     ArrayList<LatLng> markerList = new ArrayList<LatLng>();
 
     public MapActivityFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -102,14 +119,16 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     @Override
     public void onStart() {
-        super.onStart();
+        mGoogleApiClient.connect();
         mapView.onStart();
+        super.onStart();
     }
 
     @Override
     public void onStop() {
-        super.onStop();
+        mGoogleApiClient.disconnect();
         mapView.onStop();
+        super.onStop();
     }
 
     @Override
@@ -121,15 +140,6 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
     @Override
     public void onResume() {
         super.onResume();
-
-        //Obtention de la référence du service
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        //Si le GPS est disponible, on s'y abonne
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            subscribeGPS();
-        }
-
     }
 
     @Override
@@ -148,70 +158,56 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
         markerList.add(point);
     }
 
-    /*
-    GPS listener Implementation
+    /**
+     * GPS IMPLEMENTATION
      */
 
-    public void subscribeGPS() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.d(TAG, "subscribeGPS: cannot subscribe");
-            return;
-        }
-        Log.d(TAG, "subscribeGPS: subscribed");
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5, 0.001f, this);
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected");
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+        LocationRequest locationRequest;
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(100);
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
+
+        LatLng currentLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+        mapView.setLatLng(currentLatLng);
+
+        mCurrentLocationMarker = mapView.addMarker(new MarkerOptions()
+                .position(currentLatLng)
+                .title("My Position"));
+
+        Log.d(TAG, "onConnected: " + mLastLocation.toString());
     }
 
-    public void unsubscribeGPS() {
-        //Si le GPS est disponible, on s'y abonne
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.removeUpdates(this);
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspended: " + i);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged: Triggered");
-        final StringBuilder msg = new StringBuilder("lat : ");
-        msg.append(location.getLatitude());
-        msg.append( "; lng : ");
-        msg.append(location.getLongitude());
+        mCurrentLocation = location;
 
-        mapView.setLatLng(new LatLng(location.getLatitude(), location.getLongitude()));
+        LatLng currentLatLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-        Log.d(TAG, "onLocationChanged: " + msg.toString());
-    }
+        mapView.removeMarker(mCurrentLocationMarker);
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d(TAG, "onStatusChanged: " + status);
-    }
+        mCurrentLocationMarker = mapView.addMarker(new MarkerOptions()
+                .position(currentLatLng)
+                .title("Hello World!")
+                .snippet("Welcome to my marker."));
 
-    @Override
-    public void onProviderEnabled(String provider) {
-        if("gps".equals(provider)) {
-            subscribeGPS();
-        }
-    }
+        float sTmpBearing = (float) mapView.getBearing();
+        mapView.setLatLng(currentLatLng);
+        mapView.setBearing(sTmpBearing);
 
-    @Override
-    public void onProviderDisabled(String provider) {
-        if("gps".equals(provider)) {
-            unsubscribeGPS();
-        }
+        Log.d(TAG, "onLocationChanged: " + mCurrentLocation.toString());
     }
 }
