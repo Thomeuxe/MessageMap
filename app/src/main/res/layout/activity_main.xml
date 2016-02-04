@@ -10,13 +10,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.thomaslecoeur.messagemap.MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/openMapButtonWrapper"
+    <fragment
+        android:id="@+id/launchMapFragment"
+        android:name="com.thomaslecoeur.messagemap.LaunchMapFragment"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></RelativeLayout>
+        android:layout_height="wrap_content"/>
 
-    <RelativeLayout
-        android:id="@+id/openNoteListWrapper"
+    <fragment
+        android:id="@+id/launchNoteListFragment"
+        android:name="com.thomaslecoeur.messagemap.LaunchNoteListFragment"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></RelativeLayout>
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
