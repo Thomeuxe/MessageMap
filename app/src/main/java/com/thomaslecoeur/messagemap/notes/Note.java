@@ -1,5 +1,8 @@
 package com.thomaslecoeur.messagemap.notes;
 
+import android.location.Location;
+
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.orm.SugarRecord;
 
 /**
@@ -8,6 +11,8 @@ import com.orm.SugarRecord;
 public class Note extends SugarRecord {
     protected String mTitle;
     protected String mDescription;
+    protected Double mLatitude;
+    protected Double mLongitude;
 
     public Note() {
 
@@ -20,6 +25,12 @@ public class Note extends SugarRecord {
     public Note(String title, String description) {
         setTitle(title);
         setDescription(description);
+    }
+
+    public Note(String title, String description, LatLng latLng) {
+        setTitle(title);
+        setDescription(description);
+        setPosition(latLng);
     }
 
     public String getTitle() {
@@ -36,6 +47,27 @@ public class Note extends SugarRecord {
 
     public void setDescription(String Description) {
         this.mDescription = Description;
+    }
+
+    public void setPosition(LatLng latLng) {
+        setLatitude(latLng.getLatitude());
+        setLongitude(latLng.getLongitude());
+    }
+
+    public Double getLatitude() {
+        return mLatitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        mLatitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        mLongitude = longitude;
     }
 
     @Override

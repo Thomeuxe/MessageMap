@@ -22,8 +22,10 @@ import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.thomaslecoeur.messagemap.notes.Note;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -91,16 +93,23 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
          Restore marker from saved markers
           */
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("points")) {
-                markerList = savedInstanceState.getParcelableArrayList("points");
-                if (markerList != null) {
-                    for (int i = 0; i < markerList.size(); i++) {
-                        createMarker(markerList.get(i));
-                    }
-                }
-            }
+        List<Note> notes = Note.listAll(Note.class);
+        Log.d(TAG, "onCreateView: createMarkers");
+        for (int i = 0; i < notes.size(); i++) {
+            Note note = notes.get(i);
+            createMarker(new LatLng(note.getLatitude(), note.getLongitude()));
         }
+
+//        if (savedInstanceState != null) {
+//            if (savedInstanceState.containsKey("points")) {
+//                markerList = savedInstanceState.getParcelableArrayList("points");
+//                List<Note> notes = Note.listAll(Note.class);
+//                Log.d(TAG, "onCreateView: createMarkers");
+//                for (int i = 0; i < notes.size(); i++) {
+//                    createMarker(notes.get(i).getLatLng());
+//                }
+//            }
+//        }
 
         mapView.onCreate(savedInstanceState);
 
@@ -119,6 +128,8 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
      */
 
     public void createMarker(LatLng point) {
+
+        Log.d(TAG, "createMarker");
 
         MarkerOptions markerOptions = new MarkerOptions();
 
@@ -169,10 +180,17 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     @Override
     public void onMapLongClick(LatLng point) {
+
+        String title = "Créé depuis la map";
+        String desc = "En long click";
+
+        Note note = new Note(title, desc, point);
+        note.save();
+
         mapView.addMarker(new MarkerOptions()
                 .position(point)
-                .title("Hello World!")
-                .snippet("Welcome to my marker."));
+                .title(title)
+                .snippet(desc));
 
         markerList.add(point);
     }
