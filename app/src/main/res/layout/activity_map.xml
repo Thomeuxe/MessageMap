@@ -7,14 +7,26 @@
     android:fitsSystemWindows="true"
     tools:context="com.thomaslecoeur.messagemap.MapActivity">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fragment"
-        android:name="com.thomaslecoeur.messagemap.MapActivityFragment"
+    <pro.alexzaitsev.freepager.library.view.core.VerticalPager
+        android:id="@+id/vertical_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout="@layout/fragment_map" />
+        android:layout_height="match_parent" >
+
+        <fragment
+            android:name="com.thomaslecoeur.messagemap.ListNoteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/fragment"
+            android:name="com.thomaslecoeur.messagemap.MapActivityFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:layout="@layout/fragment_map" />
+
+    </pro.alexzaitsev.freepager.library.view.core.VerticalPager>
 
 </LinearLayout>
