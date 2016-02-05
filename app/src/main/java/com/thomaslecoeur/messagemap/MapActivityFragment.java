@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -103,9 +104,9 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
         for (int i = 0; i < notes.size(); i++) {
             Note note = notes.get(i);
             mapView.addMarker(new MarkerOptions()
-                    .position(new LatLng(note.getLatitude(), note.getLongitude()))
-                    .title(note.getTitle())
-                    .snippet(note.getDescription())
+                            .position(new LatLng(note.getLatitude(), note.getLongitude()))
+                            .title(note.getTitle())
+                            .snippet(note.getDescription())
             );
         }
 
@@ -218,6 +219,11 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
                 .snippet(description));
 
         markerList.add(point);
+
+        Snackbar snackbar = Snackbar
+                .make(mapView, "Note saved !", Snackbar.LENGTH_LONG);
+
+        snackbar.show();
     }
 
     /**
