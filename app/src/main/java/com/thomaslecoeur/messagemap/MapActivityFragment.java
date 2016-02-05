@@ -4,16 +4,21 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -97,7 +102,11 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
         Log.d(TAG, "onCreateView: createMarkers");
         for (int i = 0; i < notes.size(); i++) {
             Note note = notes.get(i);
-            createMarker(new LatLng(note.getLatitude(), note.getLongitude()));
+            mapView.addMarker(new MarkerOptions()
+                    .position(new LatLng(note.getLatitude(), note.getLongitude()))
+                    .title(note.getTitle())
+                    .snippet(note.getDescription())
+            );
         }
 
 //        if (savedInstanceState != null) {
@@ -179,18 +188,34 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
     }
 
     @Override
-    public void onMapLongClick(LatLng point) {
+    public void onMapLongClick(final LatLng point) {
 
-        String title = "Créé depuis la map";
-        String desc = "En long click";
+        MaterialDialog dialog = new MaterialDialog.Builder(getContext())
+                .title("Add note")
+                .customView(R.layout.add_note_form, true)
+                .positiveText("Save")
+                .neutralText("Cancel")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        View view = dialog.getCustomView();
+                        EditText title = (EditText) view.findViewById(R.id.addNoteTitle);
+                        EditText description = (EditText) view.findViewById(R.id.addNoteDescription);
 
-        Note note = new Note(title, desc, point);
+                        addNote(title.getText().toString(), description.getText().toString(), point);
+                    }
+                })
+                .show();
+    }
+
+    public void addNote(String title, String description, LatLng point) {
+        Note note = new Note(title, description, point);
         note.save();
 
         mapView.addMarker(new MarkerOptions()
                 .position(point)
                 .title(title)
-                .snippet(desc));
+                .snippet(description));
 
         markerList.add(point);
     }
