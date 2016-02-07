@@ -1,6 +1,8 @@
 package com.thomaslecoeur.messagemap;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;

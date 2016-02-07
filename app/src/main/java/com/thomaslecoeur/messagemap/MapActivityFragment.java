@@ -3,6 +3,7 @@ package com.thomaslecoeur.messagemap;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -48,6 +52,8 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
     private Location mCurrentLocation;
     private Marker mCurrentLocationMarker;
     private FloatingActionButton mCenterCurrentPositionButton;
+
+    private Icon mUserIcon;
 
     ArrayList<LatLng> markerList = new ArrayList<LatLng>();
 
@@ -248,9 +254,10 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
         mapView.setLatLng(currentLatLng);
 
-        mCurrentLocationMarker = mapView.addMarker(new MarkerOptions()
-                .position(currentLatLng)
-                .title("My Position"));
+        IconFactory iconFactory = IconFactory.getInstance(getContext());
+        mUserIcon = iconFactory.fromResource(R.drawable.ic_directions_walk_24dp);
+
+        onLocationChanged(mCurrentLocation);
 
         Log.d(TAG, "onConnected: " + mCurrentLocation.toString());
     }
@@ -270,8 +277,7 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
         mCurrentLocationMarker = mapView.addMarker(new MarkerOptions()
                 .position(currentLatLng)
-                .title("Hello World!")
-                .snippet("Welcome to my marker."));
+                .icon(mUserIcon));
 
         Log.d(TAG, "onLocationChanged: " + mCurrentLocation.toString());
     }
