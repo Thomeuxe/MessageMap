@@ -242,6 +242,9 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
+        if(mCurrentLocation == null)
+            return;
+
         LocationRequest locationRequest;
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
