@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MapActivityFragment extends Fragment implements MapView.OnMapLongClickListener, GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener {
+public class MapFragment extends Fragment implements MapView.OnMapLongClickListener, GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener {
 
     private static final String TAG = "MAP_FRAGMENT";
 
@@ -58,7 +58,7 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     ArrayList<LatLng> markerList = new ArrayList<LatLng>();
 
-    public MapActivityFragment() {
+    public MapFragment() {
     }
 
     @Override
