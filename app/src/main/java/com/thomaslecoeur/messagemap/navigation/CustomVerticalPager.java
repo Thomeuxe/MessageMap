@@ -11,7 +11,6 @@ import pro.alexzaitsev.freepager.library.view.core.VerticalPager;
 public class CustomVerticalPager extends VerticalPager {
 
     DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-    int width = displayMetrics.widthPixels;
     int height = displayMetrics.heightPixels;
     int threshold = 300;
 

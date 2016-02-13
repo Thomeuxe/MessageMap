@@ -9,7 +9,7 @@
     android:id="@+id/activityMapLayout">
 
     <com.thomaslecoeur.messagemap.navigation.CustomVerticalPager
-        android:id="@+id/vertical_pager"
+        android:id="@+id/verticalPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
