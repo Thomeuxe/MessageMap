@@ -99,6 +99,7 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
         mapView.setStyleUrl(Style.MAPBOX_STREETS);
         mapView.setLatLng(new LatLng(40.73581, -73.99155));
         mapView.setZoom(11);
+        mapView.setStyleUrl(Style.LIGHT);
 
         mapView.setOnMapLongClickListener(this);
 
