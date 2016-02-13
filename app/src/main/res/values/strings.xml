@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MessageMap</string>
+    <string name="app_name">AtlasRecord</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="action_settings">Settings</string>
 
