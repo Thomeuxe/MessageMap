@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -196,6 +197,9 @@ public class MapActivityFragment extends Fragment implements MapView.OnMapLongCl
 
     @Override
     public void onMapLongClick(final LatLng point) {
+
+        Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(50);
 
         MaterialDialog dialog = new MaterialDialog.Builder(getContext())
                 .title("Add note")
