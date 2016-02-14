@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.orm.util.NamingHelper;
 import com.thomaslecoeur.messagemap.notes.Note;
 import com.thomaslecoeur.messagemap.notes.NoteAdapter;
 
@@ -90,6 +91,7 @@ public class ListNoteFragment extends Fragment {
 
             @Override
             protected Void doInBackground(Void... params) {
+                // TODO : notes = Note.listAll(Note.class, NamingHelper.toSQLName(Note.class.getField("mCreatedOn")) + " DESC");
                 notes = Note.listAll(Note.class);
                 mNoteAdapter.addAll(notes);
                 return null;

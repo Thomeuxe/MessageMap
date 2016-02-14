@@ -70,7 +70,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         Log.d(TAG, "onBindViewHolder: " + addresses);
 
         // Handle case where no address was found.
-        if (addresses != null || addresses.size()  != 0) {
+        Log.d(TAG, "onBindViewHolder: " + addresses + " - " + addresses.size());
+        if (addresses.size() != 0) {
+            // TODO : fix crash if no adress
             Address address = addresses.get(0);
             ArrayList<String> addressFragments = new ArrayList<String>();
 

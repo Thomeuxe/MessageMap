@@ -5,6 +5,8 @@ import android.location.Location;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.orm.SugarRecord;
 
+import java.util.Date;
+
 /**
  * Created by thomaslecoeur on 04/02/16.
  */
@@ -14,24 +16,17 @@ public class Note extends SugarRecord {
     protected Double mLatitude;
     protected Double mLongitude;
     protected String mPicturePath;
+    public Date mCreatedOn;
 
     public Note() {
-
-    }
-
-    public Note(String title) {
-        setTitle(title);
-    }
-
-    public Note(String title, String description) {
-        setTitle(title);
-        setDescription(description);
+        setCreatedOn(new Date());
     }
 
     public Note(String title, String description, LatLng latLng, String mPicturePath) {
         setTitle(title);
         setDescription(description);
         setPosition(latLng);
+        setCreatedOn(new Date());
     }
 
     public String getTitle() {
@@ -79,12 +74,20 @@ public class Note extends SugarRecord {
         return mPicturePath;
     }
 
+    public Date getCreatedOn() {
+        return mCreatedOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.mCreatedOn = createdOn;
+    }
+
     public void setPicturePath(String picturePath) {
         this.mPicturePath = picturePath;
     }
 
     @Override
     public String toString() {
-        return "Note : " + mTitle + " - " + mDescription;
+        return "Note : " + mCreatedOn + " : " + mTitle + " - " + mDescription;
     }
 }
