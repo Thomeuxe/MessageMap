@@ -60,6 +60,7 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
     private Location mCurrentLocation;
     private Marker mCurrentLocationMarker;
     private FloatingActionButton mCenterCurrentPositionButton;
+    private FloatingActionButton mAddMarkerAtPositionButton;
 
 
     private Icon mUserIcon;
@@ -102,6 +103,19 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
             @Override
             public void onClick(View v) {
                 centerOnCurrentLocation();
+            }
+        });
+
+        /*
+         Add note at current location
+          */
+
+        mAddMarkerAtPositionButton = (FloatingActionButton) view.findViewById(R.id.addMarkerAtPositionButton);
+
+        mAddMarkerAtPositionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAddNoteDialog(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()));
             }
         });
 
@@ -213,10 +227,13 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
 
     @Override
     public void onMapLongClick(final LatLng point) {
-
         Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(50);
 
+        openAddNoteDialog(point);
+    }
+
+    private void openAddNoteDialog(final LatLng point) {
         MaterialDialog dialog = new MaterialDialog.Builder(getContext())
                 .title("Add note")
                 .customView(R.layout.add_note_form, true)
