@@ -13,6 +13,7 @@ public class Note extends SugarRecord {
     protected String mDescription;
     protected Double mLatitude;
     protected Double mLongitude;
+    protected String mPicturePath;
 
     public Note() {
 
@@ -27,7 +28,7 @@ public class Note extends SugarRecord {
         setDescription(description);
     }
 
-    public Note(String title, String description, LatLng latLng) {
+    public Note(String title, String description, LatLng latLng, String mPicturePath) {
         setTitle(title);
         setDescription(description);
         setPosition(latLng);
@@ -68,6 +69,14 @@ public class Note extends SugarRecord {
 
     public void setLongitude(Double longitude) {
         mLongitude = longitude;
+    }
+
+    public String getPicturePath() {
+        return mPicturePath;
+    }
+
+    public void setPicturePath(String picturePath) {
+        this.mPicturePath = picturePath;
     }
 
     @Override

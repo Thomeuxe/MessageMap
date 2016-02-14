@@ -19,4 +19,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Button
+        android:id="@+id/addImgButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Take a picture"/>
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

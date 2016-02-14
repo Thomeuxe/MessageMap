@@ -1,25 +1,26 @@
 package com.thomaslecoeur.messagemap;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -35,7 +36,11 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.thomaslecoeur.messagemap.notes.Note;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,6 +52,8 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
 
     private static final int MY_PERMISSIONS_ACCESS_FINE_LOCATION = 10;
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
     MapView mapView;
 
     GoogleApiClient mGoogleApiClient;
@@ -54,9 +61,17 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
     private Marker mCurrentLocationMarker;
     private FloatingActionButton mCenterCurrentPositionButton;
 
+
     private Icon mUserIcon;
 
     ArrayList<LatLng> markerList = new ArrayList<LatLng>();
+
+    // Dialog
+    static final int REQUEST_TAKE_PHOTO = 1;
+    ImageView thumbnailView;
+    String mCurrentPicturePath;
+    File mCurrentPictureFile;
+
 
     public MapFragment() {
     }
@@ -218,10 +233,104 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
                     }
                 })
                 .show();
+
+        Button addImgButton = (Button) dialog.getCustomView().findViewById(R.id.addImgButton);
+        thumbnailView = (ImageView) dialog.getCustomView().findViewById(R.id.thumbnail);
+
+        addImgButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dispatchTakePictureIntent();
+            }
+
+        });
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult - RequestCode: " + requestCode + " - ResultCode: " + resultCode + " - Data: " + data);
+
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPicturePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getContext().sendBroadcast(mediaScanIntent);
+
+        setPic();
+
+        /*if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+
+            Log.d(TAG, "onActivityResult: " + imageBitmap);
+            //thumbnailView.setImageBitmap(imageBitmap);
+        }*/
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPicturePath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = 200;
+        int targetH = 200;
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mCurrentPicturePath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPicturePath, bmOptions);
+        thumbnailView.setImageBitmap(bitmap);
     }
 
     public void addNote(String title, String description, LatLng point) {
-        Note note = new Note(title, description, point);
+        Note note = new Note(title, description, point, mCurrentPicturePath);
         note.save();
 
         mapView.addMarker(new MarkerOptions()
