@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toolbar;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.orm.util.NamingHelper;
@@ -54,8 +55,6 @@ public class ListNoteFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notes_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-
 
 //        Note note;
 //        for (int i = 0; i < 3; i++) {
