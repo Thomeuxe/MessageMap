@@ -1,15 +1,18 @@
 package com.thomaslecoeur.messagemap;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.thomaslecoeur.messagemap.notes.Note;
 import com.thomaslecoeur.messagemap.notes.NoteAdapter;
 
@@ -25,9 +28,21 @@ public class ListNoteFragment extends Fragment {
 
     private static final String TAG = "ListNote";
     private NoteAdapter mNoteAdapter;
+    private ListNoteFragmentInteractionListener mListener;
 
     public ListNoteFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            mListener = (ListNoteFragmentInteractionListener) context;
+        } catch (ClassCastException e) {
+            throw new RuntimeException(context.toString() + " must implement ListNoteFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -55,15 +70,10 @@ public class ListNoteFragment extends Fragment {
 
             @Override
             public void onClick(int position, View v) {
-//                Note note = notes.get(position);
-//                Log.d(TAG, "onClick / " + note);
-//
-//                Note noteCopy = new Note("Copy of " + note.getTitle(), "Description");
-//                noteCopy.save();
-//
-//                mNoteAdapter.add(noteCopy);
-//                mNoteAdapter.notifyItemInserted(mNoteAdapter.getItemCount() - 1);
+                Note currentNote = mNoteAdapter.getItem(position);
+                mListener.onClickOpenNote(currentNote.getLatLng());
             }
+
         });
 
         recyclerView.setAdapter(mNoteAdapter);
@@ -96,4 +106,7 @@ public class ListNoteFragment extends Fragment {
 
     }
 
+    public interface ListNoteFragmentInteractionListener {
+        void onClickOpenNote(LatLng pos);
+    }
 }

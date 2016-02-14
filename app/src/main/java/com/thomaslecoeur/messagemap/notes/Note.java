@@ -71,6 +71,10 @@ public class Note extends SugarRecord {
         mLongitude = longitude;
     }
 
+    public LatLng getLatLng() {
+        return new LatLng(mLatitude, mLongitude);
+    }
+
     public String getPicturePath() {
         return mPicturePath;
     }

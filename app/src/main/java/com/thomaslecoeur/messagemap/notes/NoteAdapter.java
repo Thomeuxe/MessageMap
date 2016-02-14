@@ -1,5 +1,6 @@
 package com.thomaslecoeur.messagemap.notes;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.widget.RecyclerView;
@@ -8,8 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.mapbox.mapboxsdk.MapFragment;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.thomaslecoeur.messagemap.MainActivity;
+import com.thomaslecoeur.messagemap.MapActivity;
 import com.thomaslecoeur.messagemap.R;
 
 import java.io.IOException;
@@ -85,6 +91,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         return mNotes.size();
     }
 
+    public Note getItem(int pos) {
+        return mNotes.get(pos);
+    }
+
     public void setNoteClickListener(NoteClickListener listener) {
         mListener = listener;
     }
@@ -102,6 +112,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         private final TextView mTitleView;
         private final TextView mDescriptionView;
         private final TextView mGeocoderView;
+        private final Button mButtonOpen;
 
         public NoteViewHolder(View itemView) {
             super(itemView);
@@ -109,8 +120,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             mTitleView = (TextView) itemView.findViewById(R.id.noteTitle);
             mDescriptionView = (TextView) itemView.findViewById(R.id.noteDescription);
             mGeocoderView = (TextView) itemView.findViewById(R.id.noteGeocoder);
+            mButtonOpen = (Button) itemView.findViewById(R.id.openNoteInMap);
 
-            itemView.setOnClickListener(this);
+            mButtonOpen.setOnClickListener(this);
         }
 
         public TextView getTitleView() {
@@ -127,7 +139,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: " + v);
 
             if(mListener == null) {
                 return;

@@ -407,4 +407,8 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
         Log.d(TAG, "CenterOnCurrentLocation");
         mapView.setLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), true);
     }
+
+    public void centerOnPosition(LatLng pos) {
+        mapView.setLatLng(new LatLng(pos.getLatitude(), pos.getLongitude()));
+    }
 }
