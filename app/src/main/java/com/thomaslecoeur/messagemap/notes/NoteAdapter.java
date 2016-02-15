@@ -1,6 +1,5 @@
 package com.thomaslecoeur.messagemap.notes;
 
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.mapbox.mapboxsdk.MapFragment;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.thomaslecoeur.messagemap.MainActivity;
-import com.thomaslecoeur.messagemap.MapActivity;
 import com.thomaslecoeur.messagemap.R;
 
 import java.io.IOException;
@@ -114,7 +109,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         private final TextView mTitleView;
         private final TextView mDescriptionView;
         private final TextView mGeocoderView;
-        private final Button mButtonOpen;
+        private final Button mButtonOpenInMap;
+        private final Button mButtonOpenNote;
 
         public NoteViewHolder(View itemView) {
             super(itemView);
@@ -122,9 +118,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             mTitleView = (TextView) itemView.findViewById(R.id.noteTitle);
             mDescriptionView = (TextView) itemView.findViewById(R.id.noteDescription);
             mGeocoderView = (TextView) itemView.findViewById(R.id.noteGeocoder);
-            mButtonOpen = (Button) itemView.findViewById(R.id.openNoteInMap);
+            mButtonOpenInMap = (Button) itemView.findViewById(R.id.openNoteInMap);
+            mButtonOpenNote = (Button) itemView.findViewById(R.id.openNote);
 
-            mButtonOpen.setOnClickListener(this);
+            mButtonOpenInMap.setOnClickListener(this);
+            mButtonOpenNote.setOnClickListener(this);
         }
 
         public TextView getTitleView() {
@@ -141,17 +139,22 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
         @Override
         public void onClick(View v) {
-
             if(mListener == null) {
                 return;
             }
 
-            mListener.onClick(getAdapterPosition(), v);
+            if(v.getId() == R.id.openNote) {
+                mListener.onClickOpenNote(getAdapterPosition());
+            } else if(v.getId() == R.id.openNoteInMap) {
+                mListener.onClickOpenMap(getAdapterPosition(), v);
+            }
+
         }
     }
 
     public interface NoteClickListener {
-        void onClick(int position, View v);
+        void onClickOpenMap(int position, View v);
+        void onClickOpenNote(int position);
     }
 
 }

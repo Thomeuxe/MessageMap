@@ -59,9 +59,20 @@
                 style="@style/CardActionButton"
                 android:layout_below="@+id/noteContentWrapper"
                 android:background="?android:selectableItemBackground"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/button_open_note" />
+
+            <Button
+                android:id="@+id/openNote"
+                style="@style/CardActionButton"
+                android:layout_below="@+id/noteContentWrapper"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="?android:selectableItemBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/note_see_more" />
 
         </RelativeLayout>
 

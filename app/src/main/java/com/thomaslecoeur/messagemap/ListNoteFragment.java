@@ -2,6 +2,7 @@ package com.thomaslecoeur.messagemap;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -69,9 +70,17 @@ public class ListNoteFragment extends Fragment {
         mNoteAdapter.setNoteClickListener(new NoteAdapter.NoteClickListener() {
 
             @Override
-            public void onClick(int position, View v) {
+            public void onClickOpenMap(int position, View v) {
                 Note currentNote = mNoteAdapter.getItem(position);
                 mListener.onClickOpenNote(currentNote.getLatLng());
+            }
+
+            @Override
+            public void onClickOpenNote(int position) {
+                Note currentNote = mNoteAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), SingleNoteActivity.class);
+                intent.putExtra("CURRENT_NOTE_ID", currentNote.getId());
+                startActivity(intent);
             }
 
         });
@@ -90,7 +99,7 @@ public class ListNoteFragment extends Fragment {
 
             @Override
             protected Void doInBackground(Void... params) {
-                // TODO : notes = Note.listAll(Note.class, NamingHelper.toSQLName(Note.class.getField("mCreatedOn")) + " DESC");
+                //notes = Note.listAll(Note.class, NamingHelper.toSQLName(Note.class.getField("mCreatedOn")) + " DESC");
                 notes = Note.listAll(Note.class);
                 mNoteAdapter.addAll(notes);
                 return null;
