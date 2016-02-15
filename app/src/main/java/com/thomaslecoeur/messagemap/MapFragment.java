@@ -1,6 +1,8 @@
 package com.thomaslecoeur.messagemap;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -36,8 +39,11 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.thomaslecoeur.messagemap.notes.Note;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,8 +77,6 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
     static final int REQUEST_TAKE_PHOTO = 1;
     ImageView thumbnailView;
     String mCurrentPicturePath;
-    File mCurrentPictureFile;
-
 
     public MapFragment() {
     }
@@ -269,81 +273,38 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                // Error occurred while creating the File
-            }
-            // Continue only if the File was successfully created
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            }
+            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, "onActivityResult - RequestCode: " + requestCode + " - ResultCode: " + resultCode + " - Data: " + data);
+        //setPic();
 
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPicturePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getContext().sendBroadcast(mediaScanIntent);
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-        setPic();
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            thumbnailView.setImageBitmap(thumbnail);
 
-        /*if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
-            Log.d(TAG, "onActivityResult: " + imageBitmap);
-            //thumbnailView.setImageBitmap(imageBitmap);
-        }*/
-    }
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + timeStamp + ".jpg");
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPicturePath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = 200;
-        int targetH = 200;
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPicturePath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPicturePath, bmOptions);
-        thumbnailView.setImageBitmap(bitmap);
+            mCurrentPicturePath = timeStamp + ".jpg";
+            try {
+                file.createNewFile();
+                FileOutputStream fo = new FileOutputStream(file);
+                //5
+                fo.write(bytes.toByteArray());
+                fo.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     public void addNote(String title, String description, LatLng point) {
@@ -373,7 +334,7 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
 
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if(mCurrentLocation == null)
+        if (mCurrentLocation == null)
             return;
 
         LocationRequest locationRequest;

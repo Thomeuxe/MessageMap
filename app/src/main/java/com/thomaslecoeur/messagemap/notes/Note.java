@@ -1,6 +1,7 @@
 package com.thomaslecoeur.messagemap.notes;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.orm.SugarRecord;
@@ -11,6 +12,7 @@ import java.util.Date;
  * Created by thomaslecoeur on 04/02/16.
  */
 public class Note extends SugarRecord {
+    private static final String TAG = "Note entity";
     protected String mTitle;
     protected String mDescription;
     protected Double mLatitude;
@@ -23,9 +25,11 @@ public class Note extends SugarRecord {
     }
 
     public Note(String title, String description, LatLng latLng, String mPicturePath) {
+        Log.d(TAG, "Note: " + mPicturePath);
         setTitle(title);
         setDescription(description);
         setPosition(latLng);
+        setPicturePath(mPicturePath);
         setCreatedOn(new Date());
     }
 
@@ -70,16 +74,16 @@ public class Note extends SugarRecord {
         return new LatLng(mLatitude, mLongitude);
     }
 
-    public String getPicturePath() {
-        return mPicturePath;
-    }
-
     public Date getCreatedOn() {
         return mCreatedOn;
     }
 
     public void setCreatedOn(Date createdOn) {
         this.mCreatedOn = createdOn;
+    }
+
+    public String getPicturePath() {
+        return mPicturePath;
     }
 
     public void setPicturePath(String picturePath) {

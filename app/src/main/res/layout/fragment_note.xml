@@ -13,6 +13,8 @@
         android:layout_gravity="center"
         android:background="?android:attr/selectableItemBackground"
         card_view:cardCornerRadius="2dp"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="0dp"
         card_view:cardElevation="2dp">
 
         <RelativeLayout
@@ -30,15 +32,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/noteContentWrapper"
-                android:layout_below="@+id/notePicture"
+                android:layout_toRightOf="@+id/notePicture"
                 android:orientation="vertical"
-                android:padding="@dimen/activity_horizontal_margin">
+                android:padding="@dimen/activity_horizontal_margin"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp">
 
                 <TextView
                     android:id="@+id/noteTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp" />
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/noteGeocoder"
@@ -46,33 +51,32 @@
                     android:layout_height="wrap_content"
                     android:textSize="10sp" />
 
-                <TextView
-                    android:id="@+id/noteDescription"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_horizontal_margin" />
-
             </LinearLayout>
 
-            <Button
-                android:id="@+id/openNoteInMap"
-                style="@style/CardActionButton"
-                android:layout_below="@+id/noteContentWrapper"
-                android:background="?android:selectableItemBackground"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/button_open_note" />
+                android:background="@drawable/card_button_border"
+                android:layout_below="@+id/noteContentWrapper">
 
-            <Button
-                android:id="@+id/openNote"
-                style="@style/CardActionButton"
-                android:layout_below="@+id/noteContentWrapper"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="?android:selectableItemBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/note_see_more" />
+                <Button
+                    android:id="@+id/openNoteInMap"
+                    style="@style/CardActionButton"
+                    android:background="?android:selectableItemBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_open_note" />
+
+                <Button
+                    android:id="@+id/openNote"
+                    style="@style/CardActionButton"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="?android:selectableItemBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/note_see_more" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

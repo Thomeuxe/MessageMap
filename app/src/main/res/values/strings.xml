@@ -11,5 +11,5 @@
     <string name="open_note_list_label">Toutes les notes</string>
     <string name="button_open_note">See on the map</string>
     <string name="title_activity_single_note">SingleNoteActivity</string>
-    <string name="note_see_more">Voir plus</string>
+    <string name="note_see_more">Details</string>
 </resources>

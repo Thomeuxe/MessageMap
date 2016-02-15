@@ -12,7 +12,7 @@ public class CustomVerticalPager extends VerticalPager {
 
     DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
     int height = displayMetrics.heightPixels;
-    int threshold = 300;
+    int threshold = 200;
 
     public CustomVerticalPager(Context context, AttributeSet attrs) {
         super(context, attrs);
