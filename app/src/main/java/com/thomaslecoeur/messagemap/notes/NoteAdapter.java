@@ -119,7 +119,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     }
 
     public void add(Note note) {
-        mNotes.add(note);
+        mNotes.add(0, note);
     }
 
     public void addAll(List<Note> notes) {
