@@ -10,6 +10,8 @@ Geolocalized messages Android app
 - Click "Details" to see more informations about the note
 - Swipe to top while clicking on the globe icon to switch to map view
 
+## Map / Create your markers
+
 ![list](https://raw.githubusercontent.com/Thomeuxe/MessageMap/master/git_assets/map.png)
 
 - Long click on the map to add a new marker at the selected location
@@ -17,6 +19,7 @@ Geolocalized messages Android app
 - Click the plus icon to add a marker at your current position
 - Swipe to bottom from the top of the screen to go back to the note list view
 
+## Note Details / Remember
 
 ![list](https://raw.githubusercontent.com/Thomeuxe/MessageMap/master/git_assets/single.png)
 
