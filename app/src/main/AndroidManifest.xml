@@ -22,15 +22,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity android:name=".ListNoteActivity" />
         <activity
             android:name=".SplashScreenActivity"
@@ -44,7 +40,7 @@
         <activity
             android:name=".SingleNoteActivity"
             android:label="@string/title_activity_single_note"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
