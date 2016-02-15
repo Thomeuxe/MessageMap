@@ -69,6 +69,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             {
                 e.printStackTrace();
             }
+        } else {
+            holder.getImageView().setImageResource(android.R.color.transparent);
         }
 
         Geocoder geocoder = new Geocoder(holder.getGeocoderView().getContext(), Locale.getDefault());

@@ -54,12 +54,6 @@ public class ListNoteFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notesRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-//        Note note;
-//        for (int i = 0; i < 3; i++) {
-//            note = new Note("Pile à foin", "lala lala lalalala lala lalalala lala lalalala lala lalalala lala lala");
-//            note.save();
-//        }
-
         mNoteAdapter = new NoteAdapter(new ArrayList<Note>());
 
         mNoteAdapter.notifyDataSetChanged();
@@ -96,8 +90,7 @@ public class ListNoteFragment extends Fragment {
 
             @Override
             protected Void doInBackground(Void... params) {
-                //notes = Note.listAll(Note.class, NamingHelper.toSQLName(Note.class.getField("mCreatedOn")) + " DESC");
-                notes = Note.listAll(Note.class);
+                notes = Note.findWithQuery(Note.class, "SELECT * FROM NOTE ORDER BY M_CREATED_ON DESC");
                 mNoteAdapter.addAll(notes);
                 return null;
             }
