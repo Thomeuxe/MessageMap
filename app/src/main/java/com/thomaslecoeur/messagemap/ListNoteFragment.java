@@ -8,14 +8,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toolbar;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.orm.util.NamingHelper;
 import com.thomaslecoeur.messagemap.notes.Note;
 import com.thomaslecoeur.messagemap.notes.NoteAdapter;
 
@@ -54,7 +51,7 @@ public class ListNoteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_list_note, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notes_list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notesRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
 //        Note note;
@@ -114,6 +111,11 @@ public class ListNoteFragment extends Fragment {
 
         new NoteAsyncTask().execute();
 
+    }
+
+    public void addLastMarkerNote(Note note) {
+        mNoteAdapter.add(note);
+        mNoteAdapter.notifyDataSetChanged();
     }
 
     public interface ListNoteFragmentInteractionListener {

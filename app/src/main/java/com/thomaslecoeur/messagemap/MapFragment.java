@@ -77,6 +77,7 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
     static final int REQUEST_TAKE_PHOTO = 1;
     ImageView thumbnailView;
     String mCurrentPicturePath;
+    private MapFragmentListener mListener;
 
     public MapFragment() {
     }
@@ -165,6 +166,17 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
         mapView.onCreate(savedInstanceState);
 
         return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MapFragmentListener) {
+            mListener = (MapFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement SingleNoteActivityFragmentListener");
+        }
     }
 
     @Override
@@ -318,6 +330,8 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
 
         markerList.add(point);
 
+        mListener.onAddMarker(note);
+
         Snackbar snackbar = Snackbar
                 .make(mapView, "Note saved !", Snackbar.LENGTH_LONG);
 
@@ -388,5 +402,13 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
 
     public void centerOnPosition(LatLng pos) {
         mapView.setLatLng(new LatLng(pos.getLatitude(), pos.getLongitude()));
+    }
+
+    /*
+     * Map Listener
+     */
+
+    public interface MapFragmentListener {
+        public void onAddMarker(Note note);
     }
 }
