@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.thomaslecoeur.messagemap.SingleNoteActivity">
     <item
-        android:id="@+id/action_settings"
-        android:icon=""
+        android:id="@+id/actionDeleteNote"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_delete"
         app:showAsAction="never" />
 </menu>

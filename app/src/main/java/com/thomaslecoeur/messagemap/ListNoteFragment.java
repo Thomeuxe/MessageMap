@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,5 +114,11 @@ public class ListNoteFragment extends Fragment {
 
     public interface ListNoteFragmentInteractionListener {
         void onClickOpenNote(LatLng pos);
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume: REEEEESTART");
+        super.onResume();
     }
 }

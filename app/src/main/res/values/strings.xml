@@ -12,4 +12,5 @@
     <string name="button_open_note">See on the map</string>
     <string name="title_activity_single_note">SingleNoteActivity</string>
     <string name="note_see_more">Details</string>
+    <string name="action_delete">Delete</string>
 </resources>

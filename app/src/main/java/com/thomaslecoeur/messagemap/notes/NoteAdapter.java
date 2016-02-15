@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
         holder.getTitleView().setText(note.getTitle());
 
-        Log.d(TAG, "onBindViewHolder picture path: " + note.getPicturePath());
+        holder.getDateView().setText(DateUtils.getRelativeTimeSpanString(
+                note.getCreatedOn().getTime(),
+                System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS
+        ));
 
         if(note.getPicturePath() != null) {
             Log.d(TAG, "onBindViewHolder: " + note.getPicturePath());
@@ -129,6 +134,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     public static class NoteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView mTitleView;
+        private final TextView mDateView;
         private final TextView mGeocoderView;
         private final Button mButtonOpenInMap;
         private final Button mButtonOpenNote;
@@ -138,6 +144,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             super(itemView);
 
             mTitleView = (TextView) itemView.findViewById(R.id.noteTitle);
+            mDateView = (TextView) itemView.findViewById(R.id.noteDate);
             mGeocoderView = (TextView) itemView.findViewById(R.id.noteGeocoder);
             mButtonOpenInMap = (Button) itemView.findViewById(R.id.openNoteInMap);
             mButtonOpenNote = (Button) itemView.findViewById(R.id.openNote);
@@ -145,6 +152,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
             mButtonOpenInMap.setOnClickListener(this);
             mButtonOpenNote.setOnClickListener(this);
+        }
+
+        public TextView getDateView() {
+            return mDateView;
         }
 
         public TextView getTitleView() {
