@@ -322,6 +322,7 @@ public class MapFragment extends Fragment implements MapView.OnMapLongClickListe
     public void addNote(String title, String description, LatLng point) {
         Note note = new Note(title, description, point, mCurrentPicturePath);
         note.save();
+        mCurrentPicturePath = null;
 
         mapView.addMarker(new MarkerOptions()
                 .position(point)
